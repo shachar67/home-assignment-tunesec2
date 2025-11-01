@@ -42,20 +42,23 @@ class VulnerabilityAnalysisOutput(BaseModel):
     )
 
 
-class ChainOfThought(BaseModel):
-    """Chain-of-thought reasoning for criticality assessment."""
-    company_business: str = Field(description="Brief description of company's primary business")
-    software_purpose: str = Field(description="Brief description of what the software does")
-    relevance: str = Field(description="How the software relates to the company's business")
-    impact_if_unavailable: str = Field(description="What would happen if software was unavailable")
-
-
 class CriticalityAnalysisOutput(BaseModel):
     """Structured output for criticality analysis with chain-of-thought."""
     
-    chain_of_thought: ChainOfThought = Field(
-        description="Step-by-step reasoning process"
+    # Flattened chain-of-thought fields (nested models cause issues with some LLMs)
+    company_business: str = Field(
+        description="Brief description of company's primary business"
     )
+    software_purpose: str = Field(
+        description="Brief description of what the software does"
+    )
+    relevance: str = Field(
+        description="How the software relates to the company's business"
+    )
+    impact_if_unavailable: str = Field(
+        description="What would happen if software was unavailable"
+    )
+    
     criticality_level: Criticality = Field(
         description="Business criticality level: low, medium, or high"
     )

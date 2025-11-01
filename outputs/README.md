@@ -40,11 +40,20 @@ Each JSON file contains:
 - **vulnerability_summary**: Summary of security findings
 - **criticality_level**: "low", "medium", or "high"
 - **criticality_reasoning**: Why the software is critical/not critical
+- **chain_of_thought**: Structured reasoning for criticality assessment:
+  - **company_business**: Description of company's primary business
+  - **software_purpose**: Description of what the software does
+  - **relevance**: How the software relates to the company's business
+  - **impact_if_unavailable**: Impact if software was unavailable
 - **final_summary**: Markdown-formatted comprehensive report
+- **vulnerabilities**: List of CVEs with severity, CVSS scores, and source URLs
+- **source_urls**: All sources used for verification
+- **software_verification**: Software existence and confidence
 - **traces**: Execution metadata including:
   - Tool calls (Tavily searches, Gemini analysis)
   - Elapsed times
   - Result counts
+  - API costs
 
 ## Provided Examples
 

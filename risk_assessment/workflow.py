@@ -177,7 +177,12 @@ class RiskAssessmentWorkflow:
             vulnerabilities=vuln_assessment.vulnerabilities,
             source_urls=vuln_assessment.source_data,
             software_exists=vuln_assessment.software_exists,
-            existence_confidence=vuln_assessment.existence_confidence
+            existence_confidence=vuln_assessment.existence_confidence,
+            # Pass through chain-of-thought fields
+            company_business=crit_assessment.company_business,
+            software_purpose=crit_assessment.software_purpose,
+            relevance=crit_assessment.relevance,
+            impact_if_unavailable=crit_assessment.impact_if_unavailable
         )
         
         logger.info("="*80)

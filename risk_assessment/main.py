@@ -133,6 +133,12 @@ def save_output(output: RiskAssessmentOutput, output_dir: str = "outputs"):
         "vulnerability_summary": output.vulnerability_summary,
         "criticality_level": output.criticality_level.value,
         "criticality_reasoning": output.criticality_reasoning,
+        "chain_of_thought": {
+            "company_business": output.company_business,
+            "software_purpose": output.software_purpose,
+            "relevance": output.relevance,
+            "impact_if_unavailable": output.impact_if_unavailable
+        },
         "final_summary": output.final_summary,
         "vulnerabilities": [
             {

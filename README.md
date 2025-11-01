@@ -88,6 +88,7 @@ Each assessment generates a JSON file in `outputs/` containing:
 - Decision (APPROVE/DECLINE)
 - Vulnerability summary with CVE IDs and severity
 - Business criticality assessment (LOW/MEDIUM/HIGH)
+- **Chain-of-thought reasoning** for criticality decision
 - Source URLs for verification
 - Execution traces with timestamps and costs
 - Final markdown report
@@ -98,6 +99,13 @@ Example:
   "decision": "approve",
   "vulnerability_summary": "Found 2 low-severity vulnerabilities...",
   "criticality_level": "high",
+  "criticality_reasoning": "Okta is security-critical for authentication...",
+  "chain_of_thought": {
+    "company_business": "Citi Bank is a major financial institution...",
+    "software_purpose": "Okta Workforce Identity is an identity management platform...",
+    "relevance": "Identity management is critical for secure access control...",
+    "impact_if_unavailable": "Loss of authentication would prevent employee access..."
+  },
   "vulnerabilities": [
     {
       "cve_id": "CVE-2024-1234",

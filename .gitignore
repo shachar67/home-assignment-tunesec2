@@ -40,7 +40,7 @@ ENV/
 Thumbs.db
 
 # Project specific
-outputs/*.json
+
 !outputs/example_*.json
 !outputs/README.md
 .coverage

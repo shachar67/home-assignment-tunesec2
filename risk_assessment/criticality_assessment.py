@@ -101,7 +101,7 @@ class CriticalityAssessor:
             for r in software_info
         ])
         
-        prompt = f"""You are a business analyst assessing software criticality using CHAIN-OF-THOUGHT reasoning.
+        prompt = f"""You are a business analyst assessing software criticality.
 
 COMPANY: {company_name}
 SOFTWARE: {software_name}
@@ -112,25 +112,14 @@ COMPANY CONTEXT:
 SOFTWARE CONTEXT:
 {software_context}
 
-ANALYSIS PROCESS (think through each step):
+Analyze the business criticality by thinking through these steps:
 
-STEP 1: COMPANY ANALYSIS
-- What is {company_name}'s primary business?
-- What are their core revenue streams?
-- What industry/sector do they operate in?
+1. COMPANY BUSINESS: Describe {company_name}'s primary business in 1-2 sentences
+2. SOFTWARE PURPOSE: Describe what {software_name} does in 1-2 sentences  
+3. RELEVANCE: Explain how {software_name} relates to {company_name}'s business (1-2 sentences)
+4. IMPACT IF UNAVAILABLE: Describe what would happen if {software_name} was unavailable (1-2 sentences)
 
-STEP 2: SOFTWARE ANALYSIS  
-- What does {software_name} do?
-- What is its primary purpose/function?
-- Who typically uses this software?
-
-STEP 3: RELEVANCE ASSESSMENT
-- How would {software_name} be used at {company_name}?
-- Is it core to their business operations or supplementary?
-- Would losing this software significantly impact revenue/operations?
-
-STEP 4: CRITICALITY DETERMINATION
-Apply these guidelines:
+Then determine CRITICALITY LEVEL using these guidelines:
 - HIGH: Critical to core business operations, revenue-generating, or security-critical
   Examples: IDE @ Software Company, Identity Management @ Bank, Payment Processor @ E-commerce
 - MEDIUM: Important for productivity but not core to business model
@@ -139,16 +128,28 @@ Apply these guidelines:
   Examples: Wallpaper App @ Bank, Entertainment Tool @ Enterprise
 
 EXAMPLES:
-✓ Okta Workforce Identity @ Bank → HIGH (security-critical, regulatory requirement)
-✓ IDE @ Software Company → HIGH (core productivity tool for primary business)
-✓ Analytics Tool @ E-commerce → MEDIUM (helpful insights but not essential)
-✓ Wallpaper App @ Bank → LOW (no business relevance)
+- Okta Workforce Identity @ Citi Bank → HIGH (security-critical, regulatory requirement)
+- IDE @ Software Company → HIGH (core productivity tool for primary business)
+- Analytics Tool @ E-commerce → MEDIUM (helpful insights but not essential)
 
-Provide your complete chain-of-thought analysis and final assessment."""
+You must respond with a structured JSON object with these exact fields:
+- company_business: string describing the company's primary business
+- software_purpose: string describing what the software does
+- relevance: string explaining how the software relates to the company's business
+- impact_if_unavailable: string describing impact if software was unavailable
+- criticality_level: one of "low", "medium", or "high"
+- reasoning: 2-3 sentences explaining the criticality level
+- confidence: one of "low", "medium", or "high"
+
+Provide your analysis now."""
 
         try:
             # Use structured output with Pydantic model
-            structured_llm = self.llm.with_structured_output(CriticalityAnalysisOutput)
+            # Include schema explicitly to help the model
+            structured_llm = self.llm.with_structured_output(
+                CriticalityAnalysisOutput,
+                include_raw=False
+            )
             result = structured_llm.invoke(prompt)
             
             elapsed = time.time() - start_time
@@ -165,19 +166,28 @@ Provide your complete chain-of-thought analysis and final assessment."""
                 company_name=company_name,
                 software_name=software_name,
                 criticality=result.criticality_level,
-                reasoning=result.reasoning[:REASONING_MAX_LENGTH]  # Limit length
+                reasoning=result.reasoning[:REASONING_MAX_LENGTH],  # Limit length
+                # Capture chain-of-thought fields
+                company_business=result.company_business,
+                software_purpose=result.software_purpose,
+                relevance=result.relevance,
+                impact_if_unavailable=result.impact_if_unavailable
             )
             
             return assessment, elapsed, cost_info
             
         except Exception as e:
             logger.error("Error assessing criticality: %s", e)
-            # Fallback to default
+            # Fallback to default with more informative error message
+            error_msg = str(e)
+            if "validation error" in error_msg.lower():
+                error_msg = "LLM returned malformed structured output. Using default MEDIUM criticality."
+            
             return CriticalityAssessment(
                 company_name=company_name,
                 software_name=software_name,
                 criticality=Criticality.MEDIUM,
-                reasoning=f"Error assessing criticality: {str(e)}"
+                reasoning=error_msg[:REASONING_MAX_LENGTH]
             ), time.time() - start_time, {}
     
     def assess(self, company_name: str, software_name: str) -> tuple:

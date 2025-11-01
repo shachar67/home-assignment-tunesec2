@@ -60,6 +60,11 @@ class CriticalityAssessment(BaseModel):
     software_name: str
     criticality: Criticality
     reasoning: str
+    # Chain-of-thought reasoning fields
+    company_business: Optional[str] = None
+    software_purpose: Optional[str] = None
+    relevance: Optional[str] = None
+    impact_if_unavailable: Optional[str] = None
 
 
 class RiskAssessmentState(BaseModel):
@@ -95,4 +100,9 @@ class RiskAssessmentOutput(BaseModel):
     source_urls: List[dict] = Field(default_factory=list)  # URLs where data came from
     software_exists: bool = True  # Whether software was verified to exist
     existence_confidence: str = "unknown"  # Confidence level: high, low, none, unknown
+    # Chain-of-thought reasoning fields from criticality assessment
+    company_business: Optional[str] = None
+    software_purpose: Optional[str] = None
+    relevance: Optional[str] = None
+    impact_if_unavailable: Optional[str] = None
 
