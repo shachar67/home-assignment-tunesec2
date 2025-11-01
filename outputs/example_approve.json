@@ -1,0 +1,46 @@
+{
+  "timestamp": "2025-10-30T16:30:00.000000",
+  "company_name": "Example Company",
+  "software_name": "Example Software",
+  "decision": "approve",
+  "vulnerability_summary": "No significant vulnerabilities found for Example Software.",
+  "criticality_level": "medium",
+  "criticality_reasoning": "Example Software is a productivity tool that enhances team collaboration. While not mission-critical, it provides moderate value to Example Company's operations.",
+  "final_summary": "# Risk Assessment Report\n\n**Company:** Example Company\n**Software:** Example Software\n**Decision:** APPROVE\n\n## Security Assessment\nNo significant vulnerabilities found for Example Software.\n\n**Vulnerabilities Found:** 0\n\n## Business Criticality Assessment\n**Criticality Level:** MEDIUM\n\n**Reasoning:** Example Software is a productivity tool that enhances team collaboration. While not mission-critical, it provides moderate value to Example Company's operations.\n\n## Final Decision\n✓ APPROVED: No vulnerabilities found for Example Software. The software appears to have a clean security record.",
+  "traces": [
+    {
+      "step": "cve_search",
+      "tool": "tavily",
+      "query": "CVE vulnerabilities security issues Example Software",
+      "elapsed_time": 1.234,
+      "results_count": 3
+    },
+    {
+      "step": "vulnerability_analysis",
+      "tool": "gemini",
+      "elapsed_time": 2.456,
+      "vulnerabilities_found": 0
+    },
+    {
+      "step": "company_search",
+      "tool": "tavily",
+      "query": "Example Company company business industry products services",
+      "elapsed_time": 1.123,
+      "results_count": 3
+    },
+    {
+      "step": "software_search",
+      "tool": "tavily",
+      "query": "Example Software software tool purpose use case features",
+      "elapsed_time": 1.234,
+      "results_count": 3
+    },
+    {
+      "step": "criticality_analysis",
+      "tool": "gemini",
+      "elapsed_time": 2.345,
+      "criticality": "medium"
+    }
+  ]
+}
+

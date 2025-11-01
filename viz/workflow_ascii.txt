@@ -1,0 +1,41 @@
+
+┌─────────────────────────────────────────────────────────────────┐
+│                  RISK ASSESSMENT WORKFLOW                       │
+└─────────────────────────────────────────────────────────────────┘
+
+INPUT: Company Name + Software Name
+   │
+   ▼
+┌─────────────────────────────────────────────────────────┐
+│  STEP 1: Assess Vulnerabilities                        │
+│  ├─ Verify software exists                             │
+│  ├─ Try NVD API → Extract CVSS numeric scores          │
+│  └─ Fallback to Tavily web search                      │
+│     ├─ Gemini analyzes with confidence scoring         │
+│     ├─ Self-critique validation loop                   │
+│     └─ Filter low-confidence CVEs                      │
+└─────────────────────────────────────────────────────────┘
+   │
+   ▼
+┌─────────────────────────────────────────────────────────┐
+│  STEP 2: Assess Business Criticality                   │
+│  ├─ Search company information (Tavily)                │
+│  ├─ Search software information (Tavily)               │
+│  └─ Gemini chain-of-thought reasoning:                 │
+│     ├─ Analyze company's core business                 │
+│     ├─ Analyze software purpose                        │
+│     ├─ Assess relevance to operations                  │
+│     └─ Determine impact if unavailable                 │
+└─────────────────────────────────────────────────────────┘
+   │
+   ▼
+┌─────────────────────────────────────────────────────────┐
+│  STEP 3: Make Decision (Deterministic)                 │
+│                                                         │
+│  Rule 1: No vulnerabilities → APPROVE                  │
+│  Rule 2: Med-High + Low risk only → APPROVE            │
+│  Rule 3: Otherwise → DECLINE                           │
+└─────────────────────────────────────────────────────────┘
+   │
+   ▼
+OUTPUT: Decision + Summary + Traces + CVSS Scores (JSON)
